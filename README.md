@@ -2,7 +2,7 @@ NaNoBot
 ========
 
 > For general information on
-> [oftn-bot see the repository](http://github.com/oftn/oft-bot).
+> [oftn-bot see the repository](http://github.com/oftn/oftn-bot).
 
 NaNoBot is a silly bot for NaNoWriMo word wars.
 
