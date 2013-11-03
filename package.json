@@ -1,0 +1,9 @@
+{
+  "name": "nanobot",
+  "version": "0.1.0",
+  "dependencies": {
+    "spice": "~1.0.2",
+    "boo": "~2.0.0",
+    "moment": "~2.4.0"
+  }
+}
