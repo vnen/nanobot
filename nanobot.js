@@ -127,14 +127,5 @@ NanoBot.prototype.unrecognized = function(cx, text) {
 	cx.channel.send_reply(cx.sender, "There is no command: "+text)
 }
 
-var profile = [{
-	host: "irc.irchighway.net",
-	port: 6667,
-	nick: "nanobot",
-	password: "yopassword",
-	user: "nanobot",
-	real: "Nano Bot",
-	channels: ["#NaNoBrazil"]
-}];
-
+var profile = require('./nanoprofile')
 (new NanoBot(profile)).init()
