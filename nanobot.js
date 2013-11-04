@@ -7,18 +7,32 @@ var profile = require('./nanoprofile')
 
 
 function ensure_not_active(bot, cx) {
-  if (!bot.current_ww)
-    cx.channel.send_reply(cx.sender, "No WordWar active.")
-  return true
+  if (!bot.current_ww.active)
+    return cx.channel.send_reply(cx.sender, "No WordWar active.")
+  else
+    return true
 }
 
 var WordWar = boo.Base.derive({
   init:
-  function _init(sender, minutes) {
+  function _init() {
+    this.open   = false
+    this.active = false
+  }
+
+, activate:
+  function _activate(sender, minutes) {
     this.participants = [sender]
     this.starter      = sender
     this.open         = true
+    this.active       = true
     this.time         = minutes
+  }
+
+, stop:
+  function _stop() {
+    this.open   = false
+    this.active = false
   }
 
 , join:
@@ -48,7 +62,7 @@ var WordWar = boo.Base.derive({
   function _notify_start() {
     this.open       = false
     this.start_time = moment(new Date)
-    this.end_time   = moment(new Date).add('minutes', this.minutes)
+    this.end_time   = moment(new Date).add('minutes', this.time)
     return spice('WordWar from {:start} to {:end} starting. Go {:participants}!'
                 , { participants: this.participants.join(', ')
                   , start:        this.start_time.format('hh:mm')
@@ -60,6 +74,15 @@ var WordWar = boo.Base.derive({
   function _notify_end() {
     return spice('WordWar ended, {:participants}.'
                 , { participants: this.participants.join(', ') })
+  }
+
+, notify_status:
+  function _notify_status() {
+    return spice('WordWar will end on {:end} ({:minutes} minutes left). {:participants} nanowriters are in.'
+                , { participants: this.participants.length
+                  , end:          this.end_time.format('HH:mm')
+                  , minutes:      this.end_time.subtract(new Date).format('HH:mm')
+                  })
   }
 })
 
@@ -75,31 +98,32 @@ function NanoBot(profile) {
 NanoBot.prototype.init = function() {
 	Bot.prototype.init.call(this)
 
-  this.current_ww = null
+  this.current_ww = WordWar.make()
 
 	this.register_command("ww", this.ww)
   this.register_command("stop", this.stop_ww)
   this.register_command("join", this.join_ww)
   this.register_command("start", this.start_ww)
   this.register_command("part", this.part_ww)
+  this.register_command("status", this.status_ww)
 	this.on('command_not_found', this.unrecognized)
 };
 
 NanoBot.prototype.ww = function(cx, text) {
   var minutes = Number(text)
-  if (this.current_ww)
+  if (this.current_ww.active)
     return cx.channel.send_reply(cx.sender, "There's a WordWar going on already!")
   if (isNaN(minutes))
-    return cx.channel.send_reply(cx.sender, "Use `!ww <minutes>`")
+    return cx.channel.send_reply(cx.sender, 'Use "!ww [minutes]" (e.g.: "!ww 30"). The default are 20 minutes.')
 
-  this.current_ww = WordWar.make(cx.sender, minutes)
+  this.current_ww.activate(cx.sender, minutes || 20)
   cx.channel.send(this.current_ww.notify())
 };
 
 NanoBot.prototype.start_ww = function(cx, text) {
   if (!ensure_not_active(this, cx)) return
 
-  this.current_ww.open = false
+  this.current_ww.open = true
   this.current_ww.timer = setTimeout(function() {
       cx.channel.send(this.current_ww.notify_end())
       this.current_ww = null
@@ -111,7 +135,7 @@ NanoBot.prototype.stop_ww = function(cx, text) {
   if (!ensure_not_active(this, cx))  return
 
   clearTimeout(this.current_ww.timer)
-  this.current_ww = null
+  this.current_ww.stop()
   cx.channel.send_reply(cx.sender, "WordWar stopped.")
 }
 
@@ -132,6 +156,15 @@ NanoBot.prototype.part_ww = function(cx, text) {
     this.current_ww.part(cx.sender)
     cx.channel.send(cx.sender + " left the WordWar")
   }
+}
+
+
+NanoBot.prototype.status_ww = function(cx, text) {
+  if (!ensure_not_active(this, cx))  return
+  if (!this.current_ww.open)
+    cx.channel.send_reply(cx.sender, 'The word war hasn\'t started yet. You can type "!join" to participate.')
+  else
+    cx.channel.send_reply(cx.sender, this.current_ww.notify_status())
 }
 
 NanoBot.prototype.unrecognized = function(cx, text) {

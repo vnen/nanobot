@@ -54,6 +54,12 @@ these commands:
     <td>Leaves a WordWar.</td>
     <td></td>
   </tr>
+  <tr>
+    <td>!status</td>
+    <td>Tells if there's an active WordWar in the channel, and how long it'll
+  take to finish.</td>
+    <td></td>
+  </tr>
 </tr>
 
     
