@@ -65,8 +65,8 @@ var WordWar = boo.Base.derive({
     this.end_time   = moment(new Date).add('minutes', this.time)
     return spice('WordWar from {:start} to {:end} starting. Go {:participants}!'
                 , { participants: this.participants.join(', ')
-                  , start:        this.start_time.format('hh:mm')
-                  , end:          this.end_time.format('hh:mm')
+                  , start:        this.start_time.format('HH:mm')
+                  , end:          this.end_time.format('HH:mm')
                   })
   }
 
@@ -161,7 +161,7 @@ NanoBot.prototype.part_ww = function(cx, text) {
 
 NanoBot.prototype.status_ww = function(cx, text) {
   if (!ensure_not_active(this, cx))  return
-  if (!this.current_ww.open)
+  if (this.current_ww.open)
     cx.channel.send_reply(cx.sender, 'The word war hasn\'t started yet. You can type "!join" to participate.')
   else
     cx.channel.send_reply(cx.sender, this.current_ww.notify_status())
