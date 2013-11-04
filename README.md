@@ -20,7 +20,42 @@ these commands:
 ## Running
 
     $ node nanobot.js
-    
+
+
+## Commands
+
+
+<table>
+  <tr>
+    <th>Command</th><th>Description</th><th>Example</th>
+  </tr>
+  <tr>
+    <td>!ww [minutes]</td>
+    <td>Starts a new WordWar of X minutes.</td>
+    <td>!ww 20</td>
+  </tr>
+  <tr>
+    <td>!stop</td>
+    <td>Stops a WordWar underway earlier.</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>!start</td>
+    <td>Starts a previously opened WordWar.</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>!join</td>
+    <td>Joins a WordWar that is open in the channel.</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>!part</td>
+    <td>Leaves a WordWar.</td>
+    <td></td>
+  </tr>
+</tr>
+
     
 ## Licence
 
