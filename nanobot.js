@@ -15,8 +15,6 @@ function ensure_not_active(bot, cx) {
 var WordWar = boo.Base.derive({
   init:
   function _init(sender, minutes) {
-    this.start_time   = moment(new Date)
-    this.end_time     = moment(new Date).add('minutes', minutes)
     this.participants = [sender]
     this.starter      = sender
     this.open         = true
@@ -48,7 +46,9 @@ var WordWar = boo.Base.derive({
 
 , notify_start:
   function _notify_start() {
-    this.open = false
+    this.open       = false
+    this.start_time = moment(new Date)
+    this.end_time   = moment(new Date).add('minutes', this.minutes)
     return spice('WordWar from {:start} to {:end} starting. Go {:participants}!'
                 , { participants: this.participants.join(', ')
                   , start:        this.start_time.format('hh:mm')
