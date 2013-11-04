@@ -60,7 +60,7 @@ these commands:
   take to finish.</td>
     <td></td>
   </tr>
-</tr>
+</table>
 
     
 ## Licence
