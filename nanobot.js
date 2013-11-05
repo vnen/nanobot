@@ -113,7 +113,7 @@ NanoBot.prototype.ww = function(cx, text) {
   var minutes = Number(text)
   if (this.current_ww.active)
     return cx.channel.send_reply(cx.sender, "There's a WordWar going on already!")
-  if (isNaN(minutes))
+  if (isNaN(minutes) || minutes < 0)
     return cx.channel.send_reply(cx.sender, 'Use "!ww [minutes]" (e.g.: "!ww 30"). The default are 20 minutes.')
 
   this.current_ww.activate(cx.sender, minutes || 20)
@@ -126,7 +126,7 @@ NanoBot.prototype.start_ww = function(cx, text) {
   this.current_ww.open = true
   this.current_ww.timer = setTimeout(function() {
       cx.channel.send(this.current_ww.notify_end())
-      this.current_ww = null
+      this.current_ww.stop()
   }.bind(this), this.current_ww.time * 60 * 1000)
   cx.channel.send(this.current_ww.notify_start())
 }
