@@ -124,10 +124,10 @@ NanoBot.prototype.ww = function(cx, text) {
 
 NanoBot.prototype.start_ww = function(cx, text) {
   if (!ensure_not_active(this, cx)) return
-  if (this.current_ww.open)
+  if (!this.current_ww.open)
     return cx.channel.send_reply("There's a WordWar going on already. " + this.current_ww.notify_status())
 
-  this.current_ww.open = true
+  this.current_ww.open = false
   this.current_ww.timer = setTimeout(function() {
       cx.channel.send(this.current_ww.notify_end())
       this.current_ww.stop()
@@ -145,8 +145,6 @@ NanoBot.prototype.stop_ww = function(cx, text) {
 
 NanoBot.prototype.join_ww = function(cx, text) {
   if (!ensure_not_active(this, cx))  return
-  if (!this.current_ww.open)
-    return cx.channel.send_reply(cx.sender, "WordWar is already underway.")
   if (this.current_ww.is_participating(cx.sender))
     return cx.channel.send_reply(cx.sender, "You're already in.")
 
