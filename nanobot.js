@@ -125,7 +125,7 @@ NanoBot.prototype.ww = function(cx, text) {
 NanoBot.prototype.start_ww = function(cx, text) {
   if (!ensure_not_active(this, cx)) return
   if (!this.current_ww.open)
-    return cx.channel.send_reply("There's a WordWar going on already. " + this.current_ww.notify_status())
+    return cx.channel.send_reply(cx.sender, "There's a WordWar going on already. " + this.current_ww.notify_status())
 
   this.current_ww.open = false
   this.current_ww.timer = setTimeout(function() {
