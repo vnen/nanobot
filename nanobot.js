@@ -5,7 +5,6 @@ var boo    = require('boo')
 var spice  = require('spice')
 var profile = require('./nanoprofile')
 
-
 function ensure_not_active(bot, cx) {
   if (!bot.current_ww.active)
     return cx.channel.send_reply(cx.sender, "No WordWar active.")
@@ -51,9 +50,13 @@ var WordWar = boo.Base.derive({
   }
 
 , notify:
-  function _notify() {
-    return spice('{:sender} is asking for a {:minutes} minutes WordWar! '
-                +'Type "!join" to participate. Type "!start" to begin.'
+  function _notify(start_in) {
+    return spice('{:sender} is asking for a {:minutes} minutes WordWar'
+				+ (start_in ? ' to start in ' + start_in + ' minutes' : '')
+				+ '! '
+                +'Type "!join" to participate. Type "!start" to begin'
+				+ (start_in ? ' now' : '')
+				+'.'
                 , { sender:  this.starter
                   , minutes: this.time })
   }
@@ -78,8 +81,9 @@ var WordWar = boo.Base.derive({
 
 , notify_status:
   function _notify_status() {
-    return spice('WordWar will end on {:end} ({:minutes} minutes left). {:participants} nanowriters are in.'
+    return spice('WordWar started on {:start} and will end on {:end} ({:minutes} minutes left). {:participants} nanowriters are in.'
                 , { participants: this.participants.length
+				  , start:        this.start_time.format('HH:mm')
                   , end:          this.end_time.format('HH:mm')
                   , minutes:      moment(this.end_time.toDate())
                                     .subtract(new Date)
@@ -114,14 +118,26 @@ NanoBot.prototype.init = function() {
 };
 
 NanoBot.prototype.ww = function(cx, text) {
-  var minutes = Number(text)
+  var args = text.split(' ')
+  var minutes = Number(args[0])
+  var start_in = false;
   if (this.current_ww.active)
     return cx.channel.send_reply(cx.sender, "There's a WordWar going on already!")
   if (isNaN(minutes) || minutes < 0)
-    return cx.channel.send_reply(cx.sender, 'Use "!ww [minutes]" (e.g.: "!ww 30"). The default are 20 minutes.')
+    return cx.channel.send_reply(cx.sender, 'Use "!ww [duration] [start in]" (e.g.: "!ww 30 5"). The default are 20 minutes with manual start.')
+
+  if(args.length >= 2) {
+    start_in = Number(args[1])
+	if (isNaN(start_in) || start_in < 0)
+	  return cx.channel.send_reply(cx.sender, 'Use "!ww [duration] [start in]" (e.g.: "!ww 30 5"). The default are 20 minutes with manual start.')
+	else
+	  this.current_ww.timer = setTimeout(function() {
+		  this.start_ww(cx, '')
+		}.bind(this), start_in * 60 * 1000)
+  }
 
   this.current_ww.activate(cx.sender, minutes || 20)
-  cx.channel.send(this.current_ww.notify())
+  cx.channel.send(this.current_ww.notify(start_in))
 };
 
 NanoBot.prototype.start_ww = function(cx, text) {
