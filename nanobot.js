@@ -166,9 +166,9 @@ NanoBot.prototype.part_ww = function(cx, text) {
 NanoBot.prototype.status_ww = function(cx, text) {
   if (!ensure_not_active(this, cx))  return
   if (this.current_ww.open)
-    cx.channel.send_reply(cx.sender, 'The word war hasn\'t started yet. You can type "!join" to participate.')
+    cx.channel.send_reply(cx.sender, 'There\'s a ' + this.current_ww.time + ' minutes word war, but it hasn\'t started yet. ' + (this.current_ww.is_participating(cx.sender) ? 'You\'re already in.' : 'You can type "!join" to participate.'))
   else
-    cx.channel.send_reply(cx.sender, this.current_ww.notify_status())
+    cx.channel.send_reply(cx.sender, this.current_ww.notify_status() + (this.current_ww.is_participating(cx.sender) ? ' You\'re already in.' : ' You can type "!join" to participate.'))
 }
 
 NanoBot.prototype.unrecognized = function(cx, text) {
