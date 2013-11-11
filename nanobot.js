@@ -107,6 +107,8 @@ NanoBot.prototype.init = function() {
   this.register_command("join", this.join_ww)
   this.register_command("start", this.start_ww)
   this.register_command("part", this.part_ww)
+	this.register_command("quit", this.part_ww)
+	this.register_command("leave", this.part_ww)
   this.register_command("status", this.status_ww)
 	this.on('command_not_found', this.unrecognized)
 };
