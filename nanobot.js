@@ -28,6 +28,7 @@ var WordWar = boo.Base.derive({
   function _init() {
     this.open   = false
     this.active = false
+    this.timers = []
   }
 
 , activate:
@@ -44,6 +45,8 @@ var WordWar = boo.Base.derive({
   function _stop() {
     this.open   = false
     this.active = false
+    this.timers.forEach(clearTimeout)
+    this.timers = []
   }
 
 , join:
