@@ -30,9 +30,10 @@ these commands:
     <th>Command</th><th>Description</th><th>Example</th>
   </tr>
   <tr>
-    <td>!ww [minutes]</td>
-    <td>Starts a new WordWar of X minutes.</td>
-    <td>!ww 20</td>
+    <td>!ww [duration] [time]</td>
+    <td>Starts a new WordWar of X minutes, optionally starting automatically on the given time (given as HH:MM).
+        The default is 20 minutes, starting manually.</td>
+    <td>!ww 20 14:30</td>
   </tr>
   <tr>
     <td>!stop</td>
