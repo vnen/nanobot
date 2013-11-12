@@ -28,6 +28,7 @@ var WordWar = boo.Base.derive({
   function _init() {
     this.open   = false
     this.active = false
+    this.timers = []
   }
 
 , activate:
@@ -143,9 +144,9 @@ NanoBot.prototype.ww = function(cx, text) {
     if (start_at === false)
       return cx.channel.send_reply(cx.sender, 'Use "!ww [minutes] [time]" (e.g.: "!ww 30 12:34"). The default are 20 minutes with manual start.')
     else
-      this.current_ww.timer = setTimeout(function() {
+      this.current_ww.timers.push(setTimeout(function() {
         this.start_ww(cx, '')
-      }.bind(this), start_at.diff(new Date()))
+      }.bind(this), start_at.diff(new Date())))
   }
 
   this.current_ww.activate(cx.sender, minutes || 20, start_at)
@@ -158,17 +159,18 @@ NanoBot.prototype.start_ww = function(cx, text) {
     return cx.channel.send_reply(cx.sender, "There's a WordWar going on already. " + this.current_ww.notify_status())
 
   this.current_ww.open = false
-  this.current_ww.timer = setTimeout(function() {
+  this.current_ww.timers.push(setTimeout(function() {
       cx.channel.send(this.current_ww.notify_end())
       this.current_ww.stop()
-  }.bind(this), this.current_ww.time * 60 * 1000)
+  }.bind(this), this.current_ww.time * 60 * 1000))
   cx.channel.send(this.current_ww.notify_start())
 }
 
 NanoBot.prototype.stop_ww = function(cx, text) {
   if (!ensure_not_active(this, cx))  return
 
-  clearTimeout(this.current_ww.timer)
+  this.current_ww.timers.forEach(clearTimeout)
+  this.current_ww.timers.length = 0
   this.current_ww.stop()
   cx.channel.send_reply(cx.sender, "WordWar stopped.")
 }
