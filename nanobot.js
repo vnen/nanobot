@@ -121,15 +121,36 @@ NanoBot.prototype.init = function() {
 
   this.current_ww = WordWar.make()
 
-  this.register_command("ww", this.ww)
-  this.register_command("stop", this.stop_ww)
-  this.register_command("join", this.join_ww)
-  this.register_command("start", this.start_ww)
-  this.register_command("part", this.part_ww)
-  this.register_command("quit", this.part_ww)
-  this.register_command("leave", this.part_ww)
-  this.register_command("status", this.status_ww)
+  this.register_command("ww", this.ww, {
+    allow_intentions: false,
+    help: 'Asks for a new WordWar in the channel. You can schedule the WordWar to have a particular duration, and start on a specific time. The default is a 20 minutes WordWar with manual start (see "!start"). Usage: !ww [minutes] [time] — e.g.: !ww 30 12:34'
+  })
+  this.register_command("stop", this.stop_ww, {
+    allow_intentions: false,
+    help: 'Stops an on-going WordWar, or a previously scheduled but not yet started one. Usage: !stop'
+  })
+  this.register_command("join", this.join_ww, {
+    allow_intentions: false,
+    help: 'Joins a scheduled or on-going WordWar. People who schedule the WordWar are considered to be already participating. To leave a WordWar, see !part. Usage: !join'
+  })
+  this.register_command("start", this.start_ww, {
+    allow_intentions: false,
+    help: 'Starts a scheduled WordWar. People who are participating will be notified and the bot will notify all participants when the WordWar ends. Usage: !start'
+  })
+  this.register_command("part", this.part_ww, {
+    allow_intentions: false,
+    help: 'Leaves a WordWar you\'re participating. Usage: !part. (aliases: !quit, !leave)'
+  })
+  this.register_command("quit", "part")
+  this.register_command("leave", "leave")
+  this.register_command("status", this.status_ww, {
+    help: 'Tells you if there\'s any WordWar going on in the channel, or if a WordWar has been scheduled. You can append "@ user" to your message to direct the information to someone in the channel. Usage: !status'
+  })
+  this.register_command("help", this.help)
+  this.register_command("commands", this.commands)
+
   this.on('command_not_found', this.unrecognized)
+
 };
 
 NanoBot.prototype.ww = function(cx, text) {
@@ -139,12 +160,12 @@ NanoBot.prototype.ww = function(cx, text) {
   if (this.current_ww.active)
     return cx.channel.send_reply(cx.sender, "There's a WordWar going on already!")
   if (isNaN(minutes) || minutes < 0)
-    return cx.channel.send_reply(cx.sender, 'Use "!ww [minutes] [time]" (e.g.: "!ww 30 12:34"). The default are 20 minutes with manual start.')
+    return cx.channel.send_reply(cx.sender,this.get_command_help("ww"))
 
   if(args.length >= 2) {
     start_at = string_to_time(args[1])
     if (start_at === false)
-      return cx.channel.send_reply(cx.sender, 'Use "!ww [minutes] [time]" (e.g.: "!ww 30 12:34"). The default are 20 minutes with manual start.')
+      return cx.channel.send_reply(cx.sender, this.get_command_help("ww"))
     else
       this.current_ww.timers.push(setTimeout(function() {
         this.start_ww(cx, '')
@@ -196,12 +217,27 @@ NanoBot.prototype.part_ww = function(cx, text) {
 NanoBot.prototype.status_ww = function(cx, text) {
   if (!ensure_not_active(this, cx))  return
   if (this.current_ww.open) {
-    cx.channel.send_reply(cx.sender, 'There\'s a ' + this.current_ww.time + ' minutes word war, but it hasn\'t started yet. '
+    cx.channel.send_reply(cx.intent, 'There\'s a ' + this.current_ww.time + ' minutes word war, but it hasn\'t started yet. '
     + (this.current_ww.start_at ? 'It\'ll start at ' + this.current_ww.start_at.format('HH:mm') + '. ' : '')
-    + (this.current_ww.is_participating(cx.sender) ? 'You\'re already in.' : 'You can type "!join" to participate.'))
+    + (this.current_ww.is_participating(cx.intent) ? 'You\'re already in.' : 'You can type "!join" to participate.'))
   }
   else
-    cx.channel.send_reply(cx.sender, this.current_ww.notify_status() + (this.current_ww.is_participating(cx.sender) ? ' You\'re already in.' : ' You can type "!join" to participate.'))
+    cx.channel.send_reply(cx.intent, this.current_ww.notify_status() + (this.current_ww.is_participating(cx.intent) ? ' You\'re already in.' : ' You can type "!join" to participate.'))
+}
+
+NanoBot.prototype.help = function(cx, text) {
+  try {
+    if (!text) return this.unrecognized(cx, text)
+    cx.channel.send_reply(cx.intent, this.get_command_help(text))
+  } catch (e) {
+    cx.channel.send_reply(cx.sender, e)
+  }
+}
+
+NanoBot.prototype.commands = function(cx, text) {
+  var trigger  = this.__trigger
+  var commands = this.get_commands().map(function(a){ return trigger + a })
+  cx.channel.send_reply(cx.intent, "Valid commands are: " + commands.join(', '))
 }
 
 NanoBot.prototype.unrecognized = function(cx, text) {
