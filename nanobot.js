@@ -142,7 +142,7 @@ NanoBot.prototype.init = function() {
     help: 'Leaves a WordWar you\'re participating. Usage: !part. (aliases: !quit, !leave)'
   })
   this.register_command("quit", "part")
-  this.register_command("leave", "leave")
+  this.register_command("leave", "part")
   this.register_command("status", this.status_ww, {
     help: 'Tells you if there\'s any WordWar going on in the channel, or if a WordWar has been scheduled. You can append "@ user" to your message to direct the information to someone in the channel. Usage: !status'
   })
