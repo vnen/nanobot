@@ -67,7 +67,7 @@ var WordWar = boo.Base.derive({
 , notify:
   function _notify() {
     var start_at      = this.start_at
-    var start_display = this.start_at.format('HH:mm')
+    var start_display = start_at? this.start_at.format('HH:mm') : ''
     return spice('{:sender} is asking for a {:minutes} minutes WordWar{:start}!'
                 +' Type "!join" to participate. Type "!start" to begin{:now}.'
                 , { start   : start_at? ' to start at ' + start_display : ' '
