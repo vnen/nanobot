@@ -1,9 +1,15 @@
-var Util   = require("util");
+var path   = require('path')
+var util   = require("util");
 var Bot    = require("./lib/irc");
+
 var moment = require('moment')
 var boo    = require('boo')
 var spice  = require('spice')
+var Factoid = require('./lib/factoidserv')
+
 var profile = require('./nanoprofile')
+var shared  = require('./shared')
+
 
 function ensure_not_active(bot, cx) {
   if (!bot.current_ww.active)
@@ -108,9 +114,12 @@ var WordWar = boo.Base.derive({
 })
 
 
-Util.inherits(NanoBot, Bot)
+util.inherits(NanoBot, Bot)
 function NanoBot(profile) {
   Bot.call(this, profile)
+
+  this.factoids = new Factoid(path.join(__dirname, "data/nanobot-factoids.json"))
+
   this.set_log_level(this.LOG_ALL)
   this.set_trigger("!")
 };
@@ -146,6 +155,21 @@ NanoBot.prototype.init = function() {
   this.register_command("status", this.status_ww, {
     help: 'Tells you if there\'s any WordWar going on in the channel, or if a WordWar has been scheduled. You can append "@ user" to your message to direct the information to someone in the channel. Usage: !status'
   })
+
+  this.register_command("learn", shared.learn, {
+    allow_intentions: false,
+    help: 'Teaches nanobot new tricks about the world. Usage: !learn [thing] = [what nanobot should know about "thing"].'
+  })
+
+  this.register_command("forget", shared.forget, {
+    allow_intentions: false,
+    help: 'Asks nanobot to forget about something people taught it before. Usage: !forget [thing]'
+  })
+
+  this.register_command("find", shared.find, {
+    help: 'Asks nanobot if it knows about anything related to something. Usage: !find [thing]'
+  })
+
   this.register_command("help", this.help)
   this.register_command("commands", this.commands)
 
@@ -241,7 +265,14 @@ NanoBot.prototype.commands = function(cx, text) {
 }
 
 NanoBot.prototype.unrecognized = function(cx, text) {
-	cx.channel.send_reply(cx.sender, "There is no command: "+text)
+  if (cx.priv)
+    return shared.find.call(this, cx, text)
+
+  try {
+    cx.channel.send_reply(cx.intent, this.factoids.find(text, true))
+  } catch(e) {
+	  cx.channel.send_reply(cx.sender, "Sorry, I don't know about " + text)
+  }
 }
 
 
