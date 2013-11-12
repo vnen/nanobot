@@ -7,7 +7,7 @@ var profile = require('./nanoprofile')
 
 function ensure_not_active(bot, cx) {
   if (!bot.current_ww.active)
-    return cx.channel.send_reply(cx.sender, "No WordWar active.")
+    return cx.channel.send_reply(cx.intent || cx.sender, "No WordWar active.")
   else
     return true
 }
