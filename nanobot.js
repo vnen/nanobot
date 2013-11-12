@@ -100,9 +100,7 @@ var WordWar = boo.Base.derive({
                 , { participants: this.participants.length
 				  , start:        this.start_time.format('HH:mm')
                   , end:          this.end_time.format('HH:mm')
-                  , minutes:      moment(this.end_time.toDate())
-                                    .subtract(new Date)
-                                    .format('HH:mm')
+                  , minutes:      this.end_time.diff(new Date, 'minutes')
                   })
   }
 })
