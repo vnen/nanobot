@@ -18,7 +18,7 @@ function string_to_time(hhmm) {
     return false
     
   if(start.isBefore(new Date()))
-    return false
+    start.add('days', 1)
     
   return start
 }
