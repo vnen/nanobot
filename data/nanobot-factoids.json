@@ -16,7 +16,7 @@
 		},
 		"pazuzu": {
 			"value": "WHY A̶R̶E͞ ̧Y̶O͏U̴ N̵O͟T W̡RI͏TING̨, MORT͝AL͜?͢ S̸T̡A͘R̀T ̛NO͘W͞, O͠R FEE̛L͞ ̛M͞Y͘ W̵RATH͢.",
-			"popularity": 19,
+			"popularity": 23,
 			"creator": "aziraphale",
 			"editors": []
 		},
@@ -28,7 +28,7 @@
 		},
 		"backspace": {
 			"value": "Backspace will eat your dreams when you least expect it",
-			"popularity": 4,
+			"popularity": 8,
 			"creator": "aires",
 			"editors": [
 				"sorella"
@@ -60,7 +60,7 @@
 		},
 		"marvin": {
 			"value": "vida? Nem me fale da vida!",
-			"popularity": 8,
+			"popularity": 11,
 			"creator": "bellah102",
 			"editors": []
 		},
@@ -78,7 +78,7 @@
 		},
 		"greetings": {
 			"value": "WELCOME WELCOME",
-			"popularity": 5,
+			"popularity": 6,
 			"creator": "bellah102",
 			"editors": []
 		},
@@ -126,12 +126,18 @@
 		},
 		"reach50k": {
 			"value": "Congratulations! http://images2.wikia.nocookie.net/legomessageboards/images/3/3c/Stephen-colbert-celebration-gif.gif",
-			"popularity": 0,
+			"popularity": 4,
 			"creator": "aires",
 			"editors": []
 		},
 		"statis": {
 			"value": "WORD WAR AGREGA VALOR AO CAMAROTE",
+			"popularity": 5,
+			"creator": "knightqueen",
+			"editors": []
+		},
+		"foge": {
+			"value": "Pegue as crianças e RUN TO THE HILLS!!!!! Suas juntas nunca mais serão as mesmas!",
 			"popularity": 1,
 			"creator": "knightqueen",
 			"editors": []
