@@ -46,7 +46,7 @@ var twitterMessages = {
   asking: [
     "Next one is a {:minutes} minutes sprint starting {:starting}.",
     "Hey wrimos! Get ready for a {:minutes} minutes sprint starting {:starting}.",
-    "So, who wanna rock a {:minutes} sprint starting {:starting}? ;P"
+    "So, who wanna rock a {:minutes} minutes sprint starting {:starting}? ;P"
   ],
 
   starting: [
