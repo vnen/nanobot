@@ -30,6 +30,11 @@ function string_to_time(hhmm) {
   return start
 }
 
+function logTwitterErrors(data) {
+  if (!data.id_str)
+    console.log('Error sending tweet: ' + JSON.parse(data.data).error)
+}
+
 var WordWar = boo.Base.derive({
   init:
   function _init() {
@@ -202,9 +207,11 @@ NanoBot.prototype.ww = function(cx, text) {
   cx.channel.send(this.current_ww.notify(start_at))
 
   this.twitter.updateStatus(
-    spice('Hey wrimos! Get ready for a {:minutes} sprint starting {:starting}.',
-          { minutes:  minutes
-          , starting: start_at? 'at ' + start_at.format('HH:mm') : 'soon' }))
+    spice('Hey wrimos! Get ready for a {:minutes} minutes sprint starting {:starting}.',
+          { minutes:  minutes || 20
+          , starting: start_at? 'at ' + start_at.format('HH:mm') : 'soon' })
+  , logTwitterErrors
+  )
 };
 
 NanoBot.prototype.start_ww = function(cx, text) {
@@ -216,7 +223,7 @@ NanoBot.prototype.start_ww = function(cx, text) {
   this.current_ww.timers.push(setTimeout(function() {
       cx.channel.send(this.current_ww.notify_end())
       this.current_ww.stop()
-      this.twitter.updateStatus('The sprint is over. Help yourself to some cake and coffee while you wait for the next one!')
+      this.twitter.updateStatus('The sprint is over. Help yourself to some cake and coffee while you wait for the next one!', logTwitterErrors)
   }.bind(this), this.current_ww.time * 60 * 1000))
   cx.channel.send(this.current_ww.notify_start())
 
@@ -224,7 +231,9 @@ NanoBot.prototype.start_ww = function(cx, text) {
     spice('{:minutes} sprint is starting, from {:start} to {:end}. Ready. Set. Go!'
          , { minutes: this.current_ww.time
            , start:   this.current_ww.start_time.format('HH:mm')
-           , end:     this.current_ww.end_time.format('HH:mm') }))
+           , end:     this.current_ww.end_time.format('HH:mm') })
+  , logTwitterErrors
+  )
 }
 
 NanoBot.prototype.stop_ww = function(cx, text) {
