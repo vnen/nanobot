@@ -120,7 +120,7 @@ function NanoBot(profile) {
   Bot.call(this, profile)
 
   this.factoids = new Factoid(path.join(__dirname, "data/nanobot-factoids.json"))
-  this.twitter  = new Twitter(nanoprofile[0].twitter)
+  this.twitter  = new Twitter(profile[0].twitter)
 
   this.set_log_level(this.LOG_ALL)
   this.set_trigger("!")
