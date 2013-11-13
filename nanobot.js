@@ -6,7 +6,7 @@ var moment = require('moment')
 var boo    = require('boo')
 var spice  = require('spice')
 var Factoid = require('./lib/factoidserv')
-var Twitter = require('Twitter')
+var Twitter = require('twitter')
 
 var profile = require('./nanoprofile')
 var shared  = require('./shared')
