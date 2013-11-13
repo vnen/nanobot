@@ -6,6 +6,7 @@ var moment = require('moment')
 var boo    = require('boo')
 var spice  = require('spice')
 var Factoid = require('./lib/factoidserv')
+var Twitter = require('Twitter')
 
 var profile = require('./nanoprofile')
 var shared  = require('./shared')
@@ -119,6 +120,7 @@ function NanoBot(profile) {
   Bot.call(this, profile)
 
   this.factoids = new Factoid(path.join(__dirname, "data/nanobot-factoids.json"))
+  this.twitter  = new Twitter(nanoprofile[0].twitter)
 
   this.set_log_level(this.LOG_ALL)
   this.set_trigger("!")
@@ -198,6 +200,11 @@ NanoBot.prototype.ww = function(cx, text) {
 
   this.current_ww.activate(cx.sender, minutes || 20, start_at)
   cx.channel.send(this.current_ww.notify(start_at))
+
+  this.twitter.updateStatus(
+    spice('Hey wrimos! Get ready for a {:minutes} sprint starting {:starting}.',
+          { minutes:  minutes
+          , starting: start_at? 'at ' + start_at.format('HH:mm') : 'soon' }))
 };
 
 NanoBot.prototype.start_ww = function(cx, text) {
@@ -209,8 +216,15 @@ NanoBot.prototype.start_ww = function(cx, text) {
   this.current_ww.timers.push(setTimeout(function() {
       cx.channel.send(this.current_ww.notify_end())
       this.current_ww.stop()
+      this.twitter.updateStatus('The sprint is over. Help yourself to some cake and coffee while you wait for the next one!')
   }.bind(this), this.current_ww.time * 60 * 1000))
   cx.channel.send(this.current_ww.notify_start())
+
+  this.twitter.updateStatus(
+    spice('{:minutes} sprint is starting, from {:start} to {:end}. Ready. Set. Go!'
+         , { minutes: this.current_ww.time
+           , start:   this.current_ww.start_time.format('HH:mm')
+           , end:     this.current_ww.end_time.format('HH:mm') }))
 }
 
 NanoBot.prototype.stop_ww = function(cx, text) {
