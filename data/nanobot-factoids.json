@@ -2,7 +2,7 @@
 	"factoids": {
 		"pirocas": {
 			"value": "#pirocas is a thing! Also: http://24.media.tumblr.com/cc4c7cae06833237a010c5deb81927af/tumblr_mu73j7Arjr1sbzhteo1_250.gif",
-			"popularity": 10,
+			"popularity": 11,
 			"creator": "sorella",
 			"editors": [
 				"sorella"
@@ -16,7 +16,7 @@
 		},
 		"pazuzu": {
 			"value": "WHY A̶R̶E͞ ̧Y̶O͏U̴ N̵O͟T W̡RI͏TING̨, MORT͝AL͜?͢ S̸T̡A͘R̀T ̛NO͘W͞, O͠R FEE̛L͞ ̛M͞Y͘ W̵RATH͢.",
-			"popularity": 17,
+			"popularity": 18,
 			"creator": "aziraphale",
 			"editors": []
 		},
@@ -28,7 +28,7 @@
 		},
 		"backspace": {
 			"value": "Backspace will eat your dreams when you least expect it",
-			"popularity": 3,
+			"popularity": 4,
 			"creator": "aires",
 			"editors": [
 				"sorella"
@@ -54,7 +54,7 @@
 		},
 		"congrats": {
 			"value": "PARABÃINSH http://www.youtube.com/watch?v=1Mcdh2Vf2Xk",
-			"popularity": 2,
+			"popularity": 3,
 			"creator": "xoshy",
 			"editors": []
 		},
@@ -84,7 +84,7 @@
 		},
 		"empadas": {
 			"value": "EMPADAS EMPADAS EMPADAS",
-			"popularity": 2,
+			"popularity": 3,
 			"creator": "Aquedonte",
 			"editors": []
 		},
@@ -120,8 +120,14 @@
 		},
 		"benjamin": {
 			"value": "BEN, TESÃO, BONITO E GOSTOSÃO!",
-			"popularity": 0,
+			"popularity": 1,
 			"creator": "knightqueen",
+			"editors": []
+		},
+		"reach50k": {
+			"value": "Congratulations! http://images2.wikia.nocookie.net/legomessageboards/images/3/3c/Stephen-colbert-celebration-gif.gif",
+			"popularity": 0,
+			"creator": "aires",
 			"editors": []
 		}
 	}
