@@ -228,7 +228,7 @@ NanoBot.prototype.start_ww = function(cx, text) {
   cx.channel.send(this.current_ww.notify_start())
 
   this.twitter.updateStatus(
-    spice('{:minutes} sprint is starting, from {:start} to {:end}. Ready. Set. Go!'
+    spice('A {:minutes} minutes sprint is starting, from {:start} to {:end}. Ready. Set. Go!'
          , { minutes: this.current_ww.time
            , start:   this.current_ww.start_time.format('HH:mm')
            , end:     this.current_ww.end_time.format('HH:mm') })

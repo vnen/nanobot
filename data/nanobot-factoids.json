@@ -16,7 +16,7 @@
 		},
 		"pazuzu": {
 			"value": "WHY A̶R̶E͞ ̧Y̶O͏U̴ N̵O͟T W̡RI͏TING̨, MORT͝AL͜?͢ S̸T̡A͘R̀T ̛NO͘W͞, O͠R FEE̛L͞ ̛M͞Y͘ W̵RATH͢.",
-			"popularity": 18,
+			"popularity": 19,
 			"creator": "aziraphale",
 			"editors": []
 		},
@@ -78,7 +78,7 @@
 		},
 		"greetings": {
 			"value": "WELCOME WELCOME",
-			"popularity": 4,
+			"popularity": 5,
 			"creator": "bellah102",
 			"editors": []
 		},
@@ -128,6 +128,12 @@
 			"value": "Congratulations! http://images2.wikia.nocookie.net/legomessageboards/images/3/3c/Stephen-colbert-celebration-gif.gif",
 			"popularity": 0,
 			"creator": "aires",
+			"editors": []
+		},
+		"statis": {
+			"value": "WORD WAR AGREGA VALOR AO CAMAROTE",
+			"popularity": 1,
+			"creator": "knightqueen",
 			"editors": []
 		}
 	}
