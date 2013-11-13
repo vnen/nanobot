@@ -37,22 +37,22 @@ function logTwitterErrors(data) {
 
 var twitterMessages = {
   finished: [
-    "The sprint is over. Help yourself to some cake and coffee while you wait for the next one!",
-    "Aaaand it's over! Hopefully your word count went up even if your character count went down :P",
-    "That's it, time's up. Y'all did great, keep up the good work and rock that word count!",
-    "Aaaaaand stop. Go grab some chocolate, you deserve it brave writer :)"
+    "Acabou galera. Hora de atacar o bolo e um pouco de café para esperar o próximo sprint!",
+    "Parou! Espero que sua novel tenha acumulado mais palavras, mesmo que a contagem de personagens tenha diminuído :P",
+    "Tempo! Muito bom galera, let's rock that word count :)",
+    "Eeeeee parou. It's dangerous to continue alone, grab some chocolate wrimo."
   ],
 
   asking: [
-    "Next one is a {:minutes} minutes sprint starting {:starting}.",
-    "Hey wrimos! Get ready for a {:minutes} minutes sprint starting {:starting}.",
-    "So, who wanna rock a {:minutes} minutes sprint starting {:starting}? ;P"
+    "A próxima é de {:minutes} minutos, galera começando {:starting}.",
+    "Wrimos, se preparem para uma sprint de {:minutes} minutos {:starting}.",
+    "E aí, quem tá à fim de uma sprint de {:minutes} minutes começando {:starting}."
   ],
 
   starting: [
-    "Ready to rock a {:minutes} minutes sprint? To your keyboards, wrimos!",
-    "A {:minutes} minutes sprint is starting, from {:start} to {:end}. Ready. Set. Go!",
-    "It's {:minutes} minutes this time, people. Go and do your best!"
+    "Ataquem os teclados, wrimos! Vocês têm {:minutes} minutos.",
+    "Vai rolar uma sprint de {:minutes} minutos, de {:start} à {:end}. Preparar. Apontar. ESCREVER!",
+    "É de {:minutes} minutes esse sprint, galera. Dêem o seu melhor!"
   ]
 }
 
@@ -233,7 +233,7 @@ NanoBot.prototype.ww = function(cx, text) {
   this.twitter.updateStatus(
     spice(choose(twitterMessages.asking)
          , { minutes:  minutes || 20
-           , starting: start_at? 'at ' + start_at.format('HH:mm') : 'soon' })
+           , starting: start_at? 'em ' + start_at.format('HH:mm') : 'em breve' })
   , logTwitterErrors
   )
 };
@@ -245,9 +245,12 @@ NanoBot.prototype.start_ww = function(cx, text) {
 
   this.current_ww.open = false
   this.current_ww.timers.push(setTimeout(function() {
+    setImmediate(function() {
+      this.twitter.updateStatus(choose(twitterMessages.finished), logTwitterErrors)
+    }.bind(this))
+
     cx.channel.send(this.current_ww.notify_end())
     this.current_ww.stop()
-    this.twitter.updateStatus(choose(twitterMessages.finished), logTwitterErrors)
   }.bind(this), this.current_ww.time * 60 * 1000))
   cx.channel.send(this.current_ww.notify_start())
 
