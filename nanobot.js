@@ -32,27 +32,27 @@ function string_to_time(hhmm) {
 
 function logTwitterErrors(data) {
   if (!data.id_str)
-    console.log('Error sending tweet: ' + data)
+    console.log('Error sending tweet: ' + data + '\n', data)
 }
 
 var twitterMessages = {
   finished: [
-    "Acabou galera. Hora de atacar o bolo e um pouco de café para esperar o próximo sprint!",
-    "Parou! Espero que sua novel tenha acumulado mais palavras, mesmo que a contagem de personagens tenha diminuído :P",
-    "Tempo! Muito bom galera, let's rock that word count :)",
-    "Eeeeee parou. It's dangerous to continue alone, grab some chocolate wrimo."
+    "{:end}. Acabou galera. Hora de atacar o bolo e um pouco de café para esperar o próximo sprint!",
+    "{:end}. Parou! Espero que sua novel tenha acumulado mais palavras, mesmo que a contagem de personagens tenha diminuído :P",
+    "{:end}. Tempo! Muito bom galera, let's rock that word count :)",
+    "{:end}. Eeeeee parou. It's dangerous to continue alone, grab some chocolate wrimo."
   ],
 
   asking: [
-    "A próxima é de {:minutes} minutos, galera começando {:starting}.",
+    "A próxima é de {:minutes} minutos, galera. Começando {:starting}.",
     "Wrimos, se preparem para uma sprint de {:minutes} minutos {:starting}.",
-    "E aí, quem tá à fim de uma sprint de {:minutes} minutes começando {:starting}."
+    "E aí, quem tá à fim de uma sprint de {:minutes} minutes começando {:starting}?"
   ],
 
   starting: [
-    "Ataquem os teclados, wrimos! Vocês têm {:minutes} minutos.",
+    "Ataquem os teclados, wrimos! {:start}–{:end}. Vocês têm {:minutes} minutos, wrimos.",
     "Vai rolar uma sprint de {:minutes} minutos, de {:start} à {:end}. Preparar. Apontar. ESCREVER!",
-    "É de {:minutes} minutes esse sprint, galera. Dêem o seu melhor!"
+    "{:start}–{:end}. É de {:minutes} minutes esse sprint, galera. Dêem o seu melhor!"
   ]
 }
 
@@ -246,7 +246,12 @@ NanoBot.prototype.start_ww = function(cx, text) {
   this.current_ww.open = false
   this.current_ww.timers.push(setTimeout(function() {
     setImmediate(function() {
-      this.twitter.updateStatus(choose(twitterMessages.finished), logTwitterErrors)
+      this.twitter.updateStatus(
+        spice(choose(twitterMessages.finished)
+             , { minutes: this.current_ww.time
+               , start:   this.current_ww.start_time.format('HH:mm')
+               , end:     this.current_ww.end_time.format('HH:mm')})
+      , logTwitterErrors)
     }.bind(this))
 
     cx.channel.send(this.current_ww.notify_end())
