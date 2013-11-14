@@ -20,11 +20,16 @@ function ensure_not_active(bot, cx) {
 }
 
 function string_to_time(hhmm) {
-  var start = moment(hhmm, 'H:m')
+  if (hhmm.charAt(0) === ':')
+    var start = moment().minute(hhmm.substr(1))
+  else
+    var start = moment(hhmm, 'H:m')
   if(!start.isValid())
     return false
 
-  if(start.isBefore(new Date()))
+  if(start.isBefore())
+    start.add('hours', 1)
+  if(start.isBefore())
     start.add('days', 1)
 
   return start
