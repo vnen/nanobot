@@ -1,4 +1,146 @@
 {
 	"factoids": {
+		"pirocas": {
+			"value": "#pirocas is a thing! Also: http://24.media.tumblr.com/cc4c7cae06833237a010c5deb81927af/tumblr_mu73j7Arjr1sbzhteo1_250.gif",
+			"popularity": 11,
+			"creator": "sorella",
+			"editors": [
+				"sorella"
+			]
+		},
+		"johndave": {
+			"value": "the most important thing in the world.",
+			"popularity": 1,
+			"creator": "aziraphale",
+			"editors": []
+		},
+		"pazuzu": {
+			"value": "WHY A̶R̶E͞ ̧Y̶O͏U̴ N̵O͟T W̡RI͏TING̨, MORT͝AL͜?͢ S̸T̡A͘R̀T ̛NO͘W͞, O͠R FEE̛L͞ ̛M͞Y͘ W̵RATH͢.",
+			"popularity": 23,
+			"creator": "aziraphale",
+			"editors": []
+		},
+		"incentive": {
+			"value": "come on! you can do it, i believe in you. rock that wordcount. ♥ (❁´◡`❁)",
+			"popularity": 8,
+			"creator": "aziraphale",
+			"editors": []
+		},
+		"backspace": {
+			"value": "Backspace will eat your dreams when you least expect it",
+			"popularity": 8,
+			"creator": "aires",
+			"editors": [
+				"sorella"
+			]
+		},
+		"sleep": {
+			"value": "there is no such thing as sleeping during nanowrimo. please, try again.",
+			"popularity": 0,
+			"creator": "aziraphale",
+			"editors": []
+		},
+		"cat": {
+			"value": "MIAU =D",
+			"popularity": 3,
+			"creator": "Aedel",
+			"editors": []
+		},
+		"worldbuiding": {
+			"value": "you've got no time for that on NaNo",
+			"popularity": 1,
+			"creator": "bellah102",
+			"editors": []
+		},
+		"congrats": {
+			"value": "PARABÃINSH http://www.youtube.com/watch?v=1Mcdh2Vf2Xk",
+			"popularity": 3,
+			"creator": "xoshy",
+			"editors": []
+		},
+		"marvin": {
+			"value": "vida? Nem me fale da vida!",
+			"popularity": 11,
+			"creator": "bellah102",
+			"editors": []
+		},
+		"12/0": {
+			"value": "http://obeythemuse.com/wp-content/uploads/2013/08/Boom-2.jpg",
+			"popularity": 1,
+			"creator": "nym",
+			"editors": []
+		},
+		"facepalm": {
+			"value": "oh dear... http://upload.wikimedia.org/wikipedia/commons/3/3b/Paris_Tuileries_Garden_Facepalm_statue.jpg",
+			"popularity": 1,
+			"creator": "StrikerX3",
+			"editors": []
+		},
+		"greetings": {
+			"value": "WELCOME WELCOME",
+			"popularity": 6,
+			"creator": "bellah102",
+			"editors": []
+		},
+		"empadas": {
+			"value": "EMPADAS EMPADAS EMPADAS",
+			"popularity": 3,
+			"creator": "Aquedonte",
+			"editors": []
+		},
+		"backup": {
+			"value": "SAVE YOUR NOVEL IN A THOUSAND DIFFERENT PLACES!",
+			"popularity": 2,
+			"creator": "xoshy",
+			"editors": []
+		},
+		"chat": {
+			"value": "Mantenham o chat ativo. Não me abandonem.",
+			"popularity": 1,
+			"creator": "Aquedonte",
+			"editors": []
+		},
+		"15minutos": {
+			"value": "Pessoal, vamos fazer uma ww menorzinha aí? Valeu.",
+			"popularity": 0,
+			"creator": "Aquedonte",
+			"editors": []
+		},
+		"40minutos": {
+			"value": "Pessoal, vamos fazer uma ww maiorzinha aí? Valeu.",
+			"popularity": 0,
+			"creator": "xoshy",
+			"editors": []
+		},
+		"kill": {
+			"value": "Avada Kedavra",
+			"popularity": 1,
+			"creator": "knightqueen",
+			"editors": []
+		},
+		"benjamin": {
+			"value": "BEN, TESÃO, BONITO E GOSTOSÃO!",
+			"popularity": 1,
+			"creator": "knightqueen",
+			"editors": []
+		},
+		"reach50k": {
+			"value": "Congratulations! http://images2.wikia.nocookie.net/legomessageboards/images/3/3c/Stephen-colbert-celebration-gif.gif",
+			"popularity": 4,
+			"creator": "aires",
+			"editors": []
+		},
+		"statis": {
+			"value": "WORD WAR AGREGA VALOR AO CAMAROTE",
+			"popularity": 5,
+			"creator": "knightqueen",
+			"editors": []
+		},
+		"foge": {
+			"value": "Pegue as crianças e RUN TO THE HILLS!!!!! Suas juntas nunca mais serão as mesmas!",
+			"popularity": 1,
+			"creator": "knightqueen",
+			"editors": []
+		}
 	}
 }

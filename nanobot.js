@@ -6,6 +6,7 @@ var moment = require('moment')
 var boo    = require('boo')
 var spice  = require('spice')
 var Factoid = require('./lib/factoidserv')
+var Twitter = require('twitter')
 
 var profile = require('./nanoprofile')
 var shared  = require('./shared')
@@ -28,6 +29,35 @@ function string_to_time(hhmm) {
 
   return start
 }
+
+function logTwitterErrors(data) {
+  if (!data.id_str)
+    console.log('Error sending tweet: ' + data)
+}
+
+var twitterMessages = {
+  finished: [
+    "Acabou galera. Hora de atacar o bolo e um pouco de café para esperar o próximo sprint!",
+    "Parou! Espero que sua novel tenha acumulado mais palavras, mesmo que a contagem de personagens tenha diminuído :P",
+    "Tempo! Muito bom galera, let's rock that word count :)",
+    "Eeeeee parou. It's dangerous to continue alone, grab some chocolate wrimo."
+  ],
+
+  asking: [
+    "A próxima é de {:minutes} minutos, galera começando {:starting}.",
+    "Wrimos, se preparem para uma sprint de {:minutes} minutos {:starting}.",
+    "E aí, quem tá à fim de uma sprint de {:minutes} minutes começando {:starting}."
+  ],
+
+  starting: [
+    "Ataquem os teclados, wrimos! Vocês têm {:minutes} minutos.",
+    "Vai rolar uma sprint de {:minutes} minutos, de {:start} à {:end}. Preparar. Apontar. ESCREVER!",
+    "É de {:minutes} minutes esse sprint, galera. Dêem o seu melhor!"
+  ]
+}
+
+function choose(xs) {
+  return xs[Math.floor(Math.random() * xs.length)] }
 
 var WordWar = boo.Base.derive({
   init:
@@ -119,6 +149,7 @@ function NanoBot(profile) {
   Bot.call(this, profile)
 
   this.factoids = new Factoid(path.join(__dirname, "data/nanobot-factoids.json"))
+  this.twitter  = new Twitter(profile[0].twitter)
 
   this.set_log_level(this.LOG_ALL)
   this.set_trigger("!")
@@ -198,6 +229,13 @@ NanoBot.prototype.ww = function(cx, text) {
 
   this.current_ww.activate(cx.sender, minutes || 20, start_at)
   cx.channel.send(this.current_ww.notify(start_at))
+
+  this.twitter.updateStatus(
+    spice(choose(twitterMessages.asking)
+         , { minutes:  minutes || 20
+           , starting: start_at? 'em ' + start_at.format('HH:mm') : 'em breve' })
+  , logTwitterErrors
+  )
 };
 
 NanoBot.prototype.start_ww = function(cx, text) {
@@ -207,10 +245,22 @@ NanoBot.prototype.start_ww = function(cx, text) {
 
   this.current_ww.open = false
   this.current_ww.timers.push(setTimeout(function() {
-      cx.channel.send(this.current_ww.notify_end())
-      this.current_ww.stop()
+    setImmediate(function() {
+      this.twitter.updateStatus(choose(twitterMessages.finished), logTwitterErrors)
+    }.bind(this))
+
+    cx.channel.send(this.current_ww.notify_end())
+    this.current_ww.stop()
   }.bind(this), this.current_ww.time * 60 * 1000))
   cx.channel.send(this.current_ww.notify_start())
+
+  this.twitter.updateStatus(
+    spice(choose(twitterMessages.starting)
+         , { minutes: this.current_ww.time
+           , start:   this.current_ww.start_time.format('HH:mm')
+           , end:     this.current_ww.end_time.format('HH:mm') })
+  , logTwitterErrors
+  )
 }
 
 NanoBot.prototype.stop_ww = function(cx, text) {
@@ -271,7 +321,7 @@ NanoBot.prototype.unrecognized = function(cx, text) {
   try {
     cx.channel.send_reply(cx.intent, this.factoids.find(text, true))
   } catch(e) {
-	  cx.channel.send_reply(cx.sender, "Sorry, I don't know about " + text)
+    cx.channel.send_reply(cx.sender, "Sorry, I don't know about " + text)
   }
 }
 
