@@ -2,7 +2,7 @@
 	"factoids": {
 		"pirocas": {
 			"value": "#pirocas is a thing! Also: http://24.media.tumblr.com/cc4c7cae06833237a010c5deb81927af/tumblr_mu73j7Arjr1sbzhteo1_250.gif",
-			"popularity": 11,
+			"popularity": 14,
 			"creator": "sorella",
 			"editors": [
 				"sorella"
@@ -16,7 +16,7 @@
 		},
 		"pazuzu": {
 			"value": "WHY A̶R̶E͞ ̧Y̶O͏U̴ N̵O͟T W̡RI͏TING̨, MORT͝AL͜?͢ S̸T̡A͘R̀T ̛NO͘W͞, O͠R FEE̛L͞ ̛M͞Y͘ W̵RATH͢.",
-			"popularity": 23,
+			"popularity": 35,
 			"creator": "aziraphale",
 			"editors": []
 		},
@@ -28,7 +28,7 @@
 		},
 		"backspace": {
 			"value": "Backspace will eat your dreams when you least expect it",
-			"popularity": 8,
+			"popularity": 13,
 			"creator": "aires",
 			"editors": [
 				"sorella"
@@ -53,14 +53,16 @@
 			"editors": []
 		},
 		"congrats": {
-			"value": "PARABÃINSH http://www.youtube.com/watch?v=1Mcdh2Vf2Xk",
-			"popularity": 3,
+			"value": "PARABẼINSH http://www.youtube.com/watch?v=1Mcdh2Vf2Xk",
+			"popularity": 5,
 			"creator": "xoshy",
-			"editors": []
+			"editors": [
+				"xoshy"
+			]
 		},
 		"marvin": {
 			"value": "vida? Nem me fale da vida!",
-			"popularity": 11,
+			"popularity": 12,
 			"creator": "bellah102",
 			"editors": []
 		},
@@ -78,7 +80,7 @@
 		},
 		"greetings": {
 			"value": "WELCOME WELCOME",
-			"popularity": 6,
+			"popularity": 8,
 			"creator": "bellah102",
 			"editors": []
 		},
@@ -126,19 +128,49 @@
 		},
 		"reach50k": {
 			"value": "Congratulations! http://images2.wikia.nocookie.net/legomessageboards/images/3/3c/Stephen-colbert-celebration-gif.gif",
-			"popularity": 4,
+			"popularity": 7,
 			"creator": "aires",
 			"editors": []
 		},
 		"statis": {
 			"value": "WORD WAR AGREGA VALOR AO CAMAROTE",
-			"popularity": 5,
+			"popularity": 13,
 			"creator": "knightqueen",
 			"editors": []
 		},
 		"foge": {
 			"value": "Pegue as crianças e RUN TO THE HILLS!!!!! Suas juntas nunca mais serão as mesmas!",
 			"popularity": 1,
+			"creator": "knightqueen",
+			"editors": []
+		},
+		"martin": {
+			"value": "Embrace yourselves, December is coming!",
+			"popularity": 2,
+			"creator": "lais",
+			"editors": []
+		},
+		"laser": {
+			"value": "IMMA FIRIN' MA LAZOR >D",
+			"popularity": 1,
+			"creator": "Aedel",
+			"editors": []
+		},
+		"smeagol": {
+			"value": "myyy preciousssssssss",
+			"popularity": 2,
+			"creator": "knightqueen",
+			"editors": []
+		},
+		"aranhas": {
+			"value": "por que sigam as aranhas? por que não poderia ser \"sigam as borboletas\"?",
+			"popularity": 0,
+			"creator": "knightqueen",
+			"editors": []
+		},
+		"snape": {
+			"value": "After all this time? ~*~*~*~*~ Always :3 ~*~*~*~*~",
+			"popularity": 0,
 			"creator": "knightqueen",
 			"editors": []
 		}
