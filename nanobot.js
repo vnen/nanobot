@@ -41,7 +41,7 @@ function logTwitterErrors(data) {
     console.log('Error sending tweet: ' + data + '\n', data)
 }
 
-var statusInterval = 60000
+var statusInterval = 300000
 function show_status(ww, cx) {
   if(ww.active) {
     cx.channel.send(ww.notify_status())
@@ -70,6 +70,27 @@ var twitterMessages = {
   ]
 }
 
+var finalWcInterval = 300000
+function select_winner(ww, cx) {
+    var winner = {
+      name: ''
+    , wc: -1
+    }
+
+    for(var writer in ww.wordcounts)
+    {
+      var thisWc = ww.wordcounts[writer].current - ww.wordcounts[writer].start
+      if (thisWc > winner.wc)
+        winner = {
+          name: writer
+        , wc: thisWc
+        }
+    }
+
+    cx.channel.send('The one who wrote more was ' + winner.name + ' with ' + winner.wc + ' words, but everyone is a winner!')
+    ww.trailing = false
+  }
+
 function choose(xs) {
   return xs[Math.floor(Math.random() * xs.length)] }
 
@@ -78,7 +99,9 @@ var WordWar = boo.Base.derive({
   function _init() {
     this.open   = false
     this.active = false
+    this.trailing = false
     this.timers = []
+    this.trailing_timer = false
   }
 
 , activate:
@@ -89,6 +112,12 @@ var WordWar = boo.Base.derive({
     this.active       = true
     this.time         = minutes
     this.start_at     = start_at
+    this.wordcounts   = {}
+    this.wordcounts[sender.name] = {
+      start: 0
+    , current: 0
+    }
+    this.finals = [] // The ones who has setted the final wordcount
   }
 
 , stop:
@@ -97,16 +126,22 @@ var WordWar = boo.Base.derive({
     this.active = false
     this.timers.forEach(clearTimeout)
     this.timers = []
+    this.trailing = true
   }
 
 , join:
   function _add(name) {
     this.participants.push(name.name)
+    this.wordcounts[name] = {
+      start: 0
+    , current: 0
+    }
   }
 
 , part:
   function _part(name) {
     this.participants = this.participants.filter(function(a){ return a !== name.name })
+    delete this.wordcounts[name]
   }
 
 , is_participating:
@@ -155,6 +190,32 @@ var WordWar = boo.Base.derive({
                   , minutes:      this.end_time.diff(new Date, 'minutes')
                   })
   }
+
+, set_wc:
+  function _set_wc(sender, wc) {
+    if(!this.is_participating(sender))
+    {
+      return 'You\'re not participating this WordWar. Type !join to participate'
+    }
+    if(this.open)
+    {
+      this.wordcounts[sender.name].start = wc
+      this.wordcounts[sender.name].current = wc
+      return 'Your starting wordcount is now ' + wc
+    }
+    else
+    {
+      this.wordcounts[sender.name].current = wc
+
+      if(this.trailing)
+      {
+        this.finals.push(sender.name)
+      }
+
+      return 'Your starting wordcount is ' + this.wordcounts[sender.name].start +
+              ' and you wrote ' + (wc - this.wordcounts[sender.name].start) + ' words'
+    }
+  }
 })
 
 
@@ -200,6 +261,15 @@ NanoBot.prototype.init = function() {
   this.register_command("status", this.status_ww, {
     help: 'Te diz se existe uma WordWar em andamento, ou se uma WordWar foi agendada. Você pode adicionar "@ <usuário>" para direcionar sua mensagem para alguém no canal. Comando: !status'
   })
+  this.register_command("wc", this.update_wc, {
+    allow_intentions: false,
+    help: 'Updates your current total wordcount. If the wordwar has not yet started, this will be your starting wordcount, so this bot can do the math for you. Usage: !wc [wordcount] — e.g.: !wc 42'
+  })
+
+  this.register_command("end", this.end_ww, {
+    allow_intentions: false,
+    help: 'sd'
+  })
 
   this.register_command("learn", shared.learn, {
     allow_intentions: false,
@@ -228,6 +298,8 @@ NanoBot.prototype.ww = function(cx, text) {
   var start_at = false;
   if (this.current_ww.active)
     return cx.channel.send_reply(cx.sender, "Já existe uma WordWar em andamento. " + this.current_ww.notify_status())
+  if (this.current_ww.trailing)
+    return cx.channel.send_reply(cx.sender, "Wait until everyone set their final wordcount.")
   if (isNaN(minutes) || minutes < 0)
     return cx.channel.send_reply(cx.sender,this.get_command_help("ww"))
 
@@ -273,7 +345,7 @@ NanoBot.prototype.start_ww = function(cx, text) {
     this.current_ww.stop()
   }.bind(this), this.current_ww.time * 60 * 1000))
   cx.channel.send(this.current_ww.notify_start())
-  
+
   this.current_ww.status_timer = setTimeout(show_status(this.current_ww, cx), statusInterval);
 
   this.twitter.updateStatus(
@@ -289,7 +361,23 @@ NanoBot.prototype.stop_ww = function(cx, text) {
   if (!ensure_not_active(this, cx))  return
 
   this.current_ww.stop()
-  cx.channel.send_reply(cx.sender, "WordWar terminou.")
+  cx.channel.send_reply(cx.sender, "WordWar stopped. The final wordcounts can be sent in the next " + (finalWcInterval / 60000 ) + ' minutes')
+
+  this.current_ww.trailing_timer = setTimeout(select_winner, finalWcInterval, this.current_ww, cx);
+
+  clearTimeout(this.current_ww.status_timer)
+}
+
+NanoBot.prototype.end_ww = function(cx, text) {
+  if (!this.current_ww.active && !this.current_ww.trailing)
+    return cx.channel.send_reply(cx.sender, 'No WordWar active')
+
+  if (this.current_ww.active)
+    return cx.channel.send_reply(cx.sender, 'The wordwar is still going on. !stop it before finalizing it.')
+
+  clearTimeout(this.current_ww.trailing_timer)
+
+  select_winner(this.current_ww, cx)
 }
 
 NanoBot.prototype.join_ww = function(cx, text) {
@@ -319,6 +407,21 @@ NanoBot.prototype.status_ww = function(cx, text) {
   }
   else
     cx.channel.send_reply(cx.intent, this.current_ww.notify_status() + (this.current_ww.is_participating(cx.intent) ? ' Você já está participando.' : ' Você pode enviar "!join" para participar.'))
+}
+
+NanoBot.prototype.update_wc = function(cx, text) {
+  if (!this.current_ww.active && !this.current_ww.trailing)
+    return cx.channel.send_reply(cx.sender, 'No WordWar active')
+
+  var args = text.split(/\s+/)
+  var wc = parseInt(args[0], 10)
+  if (isNaN(wc) || wc < 0)
+    return cx.channel.send_reply(cx.sender,this.get_command_help("wc"))
+
+  cx.channel.send_reply(cx.sender, this.current_ww.set_wc(cx.sender, wc))
+
+  if(this.current_ww.finals.length == this.current_ww.participants.length)
+    return this.end_ww(cx)
 }
 
 NanoBot.prototype.help = function(cx, text) {
