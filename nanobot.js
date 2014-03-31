@@ -41,6 +41,14 @@ function logTwitterErrors(data) {
     console.log('Error sending tweet: ' + data + '\n', data)
 }
 
+var statusInterval = 60000
+function show_status(ww, cx) {
+  if(ww.active) {
+    cx.channel.send(ww.notify_status())
+    ww.status_timer = setTimeout(function(){ show_status(ww, cx); } , statusInterval)
+  }
+}
+
 var twitterMessages = {
   finished: [
     "{:end}. Acabou galera. Hora de atacar o bolo e um pouco de café para esperar o próximo sprint!",
@@ -75,8 +83,8 @@ var WordWar = boo.Base.derive({
 
 , activate:
   function _activate(sender, minutes, start_at) {
-    this.participants = [sender]
-    this.starter      = sender
+    this.participants = [sender.name]
+    this.starter      = sender.name
     this.open         = true
     this.active       = true
     this.time         = minutes
@@ -93,17 +101,17 @@ var WordWar = boo.Base.derive({
 
 , join:
   function _add(name) {
-    this.participants.push(name)
+    this.participants.push(name.name)
   }
 
 , part:
   function _part(name) {
-    this.participants = this.participants.filter(function(a){ return a !== name })
+    this.participants = this.participants.filter(function(a){ return a !== name.name })
   }
 
 , is_participating:
   function _is_participating(name) {
-    return this.participants.some(function(a){ return a === name })
+    return this.participants.some(function(a){ return a === name.name })
   }
 
 , notify:
@@ -265,6 +273,8 @@ NanoBot.prototype.start_ww = function(cx, text) {
     this.current_ww.stop()
   }.bind(this), this.current_ww.time * 60 * 1000))
   cx.channel.send(this.current_ww.notify_start())
+  
+  this.current_ww.status_timer = setTimeout(show_status(this.current_ww, cx), statusInterval);
 
   this.twitter.updateStatus(
     spice(choose(twitterMessages.starting)
