@@ -4,8 +4,16 @@
   "dependencies": {
     "spice": "~1.0.2",
     "boo": "~2.0.0",
-    "moment": "~2.4.0",
+    "moment": "~2.8.3",
     "twitter": "~0.2.12",
-    "cookies": "~0.5.0"
+    "cookies": "~0.5.0",
+    "express": "~4.9.8",
+    "moment-timezone": "~0.2.3"
+  },
+  "scripts": {
+    "start": "node nanobot"
+  },
+  "engines": {
+    "node": "0.10.x"
   }
 }
