@@ -21,18 +21,19 @@ function ensure_not_active(bot, cx) {
 
 function string_to_time(hhmm) {
   if (hhmm.charAt(0) === ':')
-    var start = moment().minute(hhmm.substr(1))
+    var start = moment().tz('America/Sao_Paulo').minutes(+hhmm.slice(1))
   else
-    var start = moment(hhmm, 'H:m')
+    var start = moment.tz(moment().format('YYYY-MM-DD') + ' ' + hhmm, 'YYYY-MM-DD H:m', 'America/Sao_Paulo')
   if(!start.isValid())
     return false
 
-  if(start.isBefore())
-    start.add('hours', 1)
-  if(start.isBefore())
-    start.add('days', 1)
+  if(start.isBefore(new Date))
+    start.add(1, 'hours')
 
-  return start.tz("America/Sao_Paulo")
+  if(start.isBefore(new Date))
+    start.add(1, 'days')
+
+  return start
 }
 
 function logTwitterErrors(data) {
@@ -229,7 +230,7 @@ NanoBot.prototype.ww = function(cx, text) {
     else
       this.current_ww.timers.push(setTimeout(function() {
         this.start_ww(cx, '')
-      }.bind(this), start_at.diff(new Date())))
+      }.bind(this), start_at.diff(new Date)))
   }
 
   this.current_ww.activate(cx.sender, minutes || 20, start_at)
