@@ -23,7 +23,7 @@ function string_to_time(hhmm) {
   if (hhmm.charAt(0) === ':')
     var start = moment().tz('America/Sao_Paulo').minutes(+hhmm.slice(1))
   else
-    var start = moment.tz(moment().format('YYYY-MM-DD') + ' ' + hhmm, 'YYYY-MM-DD H:m', 'America/Sao_Paulo')
+    var start = moment.tz(moment.tz('America/Sao_Paulo').format('YYYY-MM-DD') + ' ' + hhmm, 'YYYY-MM-DD H:m', 'America/Sao_Paulo')
   if(!start.isValid())
     return false
 
