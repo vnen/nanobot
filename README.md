@@ -12,7 +12,7 @@ NaNoBot is a silly bot for NaNoWriMo word wars.
 You'll need [Node.js](http://nodejs.org) and [Git](http://git-scm.com/). Run
 these commands:
 
-    $ git clone git://github.com/killdream/nanobot.git
+    $ git clone git://github.com/robotlolita/nanobot.git
     $ cd nanobot
     $ npm install
     
