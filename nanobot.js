@@ -23,7 +23,7 @@ function string_to_time(hhmm) {
   if (hhmm.charAt(0) === ':')
     var start = moment().tz('America/Sao_Paulo').minutes(+hhmm.slice(1))
   else
-    var start = moment.tz(moment.tz('America/Sao_Paulo').format('YYYY-MM-DD') + ' ' + hhmm, 'YYYY-MM-DD H:m', 'America/Sao_Paulo')
+    var start = moment.tz(moment.tz('America/Sao_Paulo').format('YYYY-MM-DD') + ' ' + hhmm + ':00', 'YYYY-MM-DD H:m:ss', 'America/Sao_Paulo')
   if(!start.isValid())
     return false
 
@@ -31,7 +31,7 @@ function string_to_time(hhmm) {
     start.add(1, 'hours')
 
   if(start.isBefore(new Date))
-    start.add(1, 'days')
+    start.subtract(1, 'hours').add(1, 'days')
 
   return start
 }
@@ -227,10 +227,11 @@ NanoBot.prototype.ww = function(cx, text) {
     start_at = string_to_time(args[1])
     if (start_at === false)
       return cx.channel.send_reply(cx.sender, this.get_command_help("ww"))
-    else
+    else {
       this.current_ww.timers.push(setTimeout(function() {
         this.start_ww(cx, '')
       }.bind(this), start_at.diff(new Date)))
+    }
   }
 
   this.current_ww.activate(cx.sender, minutes || 20, start_at)
