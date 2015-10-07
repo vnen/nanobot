@@ -13,7 +13,7 @@ var shared  = require('./shared')
 
 
 function ensure_not_active(bot, cx) {
-  if (!bot.current_ww.active)
+  if (!bot.current_ww.active && !bot.current_ww.trailing)
     return cx.channel.send_reply(cx.intent || cx.sender, "Nenhuma WordWar está rolando no momento. Você pode enviar \"!ww [duração] [hh:mm]\" para pedir uma!")
   else
     return true
@@ -369,8 +369,7 @@ NanoBot.prototype.stop_ww = function(cx, text) {
 }
 
 NanoBot.prototype.end_ww = function(cx, text) {
-  if (!this.current_ww.active && !this.current_ww.trailing)
-    return cx.channel.send_reply(cx.sender, 'Nenhuma WordWar ativa.')
+  if (!ensure_not_active(this, cx))  return
 
   if (this.current_ww.active)
     return cx.channel.send_reply(cx.sender, 'A WordWar ainda está em andamento. Pare ela com !stop antes de encerrar as contagens.')
@@ -410,8 +409,7 @@ NanoBot.prototype.status_ww = function(cx, text) {
 }
 
 NanoBot.prototype.update_wc = function(cx, text) {
-  if (!this.current_ww.active && !this.current_ww.trailing)
-    return cx.channel.send_reply(cx.sender, 'Nenhuma WordWar ativa.')
+  if (!ensure_not_active(this, cx))  return
 
   var args = text.split(/\s+/)
   var wc = parseInt(args[0], 10)
