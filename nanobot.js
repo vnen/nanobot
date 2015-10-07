@@ -404,6 +404,9 @@ NanoBot.prototype.status_ww = function(cx, text) {
     + (this.current_ww.start_at ? 'Ela vai começar às ' + this.current_ww.start_at.format('HH:mm') + '. ' : '')
     + (this.current_ww.is_participating(cx.intent) ? 'Você já está participando.' : 'Você pode enviar "!join" para participar.'))
   }
+  else if (this.current_ww.trailing) {
+    cx.channel.send_reply(cx.intent, 'Uma WordWar acabou de terminar. Os participantes podem enviar as contagens finais com !wc')
+  }
   else
     cx.channel.send_reply(cx.intent, this.current_ww.notify_status() + (this.current_ww.is_participating(cx.intent) ? ' Você já está participando.' : ' Você pode enviar "!join" para participar.'))
 }
