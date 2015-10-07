@@ -87,7 +87,7 @@ function select_winner(ww, cx) {
         }
     }
 
-    cx.channel.send('The one who wrote more was ' + winner.name + ' with ' + winner.wc + ' words, but everyone is a winner!')
+    cx.channel.send('Quem escreveu mais foi ' + winner.name + ' com ' + winner.wc + ' palavras, mas todos são vencedores!')
     ww.trailing = false
   }
 
@@ -195,13 +195,13 @@ var WordWar = boo.Base.derive({
   function _set_wc(sender, wc) {
     if(!this.is_participating(sender))
     {
-      return 'You\'re not participating this WordWar. Type !join to participate'
+      return 'Você não está participando desta WordWar. Envie !join para participar.'
     }
     if(this.open)
     {
       this.wordcounts[sender.name].start = wc
       this.wordcounts[sender.name].current = wc
-      return 'Your starting wordcount is now ' + wc
+      return 'Sua contagem inicial agora é de ' + wc + ' palavras.'
     }
     else
     {
@@ -212,8 +212,8 @@ var WordWar = boo.Base.derive({
         this.finals.push(sender.name)
       }
 
-      return 'Your starting wordcount is ' + this.wordcounts[sender.name].start +
-              ' and you wrote ' + (wc - this.wordcounts[sender.name].start) + ' words'
+      return 'Sua contagem inicial é de ' + this.wordcounts[sender.name].start +
+              ' palavras e você escreveu ' + (wc - this.wordcounts[sender.name].start) + ' palavras.'
     }
   }
 })
@@ -263,12 +263,12 @@ NanoBot.prototype.init = function() {
   })
   this.register_command("wc", this.update_wc, {
     allow_intentions: false,
-    help: 'Updates your current total wordcount. If the wordwar has not yet started, this will be your starting wordcount, so this bot can do the math for you. Usage: !wc [wordcount] — e.g.: !wc 42'
+    help: 'Atualiza sua contagem total de palavras até agora. Se a WordWar não tiver iniciado, essa será sua contagem inicial, então este bot poderá fazer a conta para você. Comando: !wc [contagem] — ex: !wc 42'
   })
 
   this.register_command("end", this.end_ww, {
     allow_intentions: false,
-    help: 'sd'
+    help: 'Encerra o envio das contagens imediatamente. Útil para o caso de alguém ter saído do chat no meio da WordWar. Comando: !end'
   })
 
   this.register_command("learn", shared.learn, {
@@ -299,7 +299,7 @@ NanoBot.prototype.ww = function(cx, text) {
   if (this.current_ww.active)
     return cx.channel.send_reply(cx.sender, "Já existe uma WordWar em andamento. " + this.current_ww.notify_status())
   if (this.current_ww.trailing)
-    return cx.channel.send_reply(cx.sender, "Wait until everyone set their final wordcount.")
+    return cx.channel.send_reply(cx.sender, "Espere até que todos enviem sua contagem de palavras.")
   if (isNaN(minutes) || minutes < 0)
     return cx.channel.send_reply(cx.sender,this.get_command_help("ww"))
 
@@ -361,7 +361,7 @@ NanoBot.prototype.stop_ww = function(cx, text) {
   if (!ensure_not_active(this, cx))  return
 
   this.current_ww.stop()
-  cx.channel.send_reply(cx.sender, "WordWar stopped. The final wordcounts can be sent in the next " + (finalWcInterval / 60000 ) + ' minutes')
+  cx.channel.send_reply(cx.sender, "WordWar terminou. As contagens finais podem ser enviadas nos próximos " + (finalWcInterval / 60000) + ' minutos')
 
   this.current_ww.trailing_timer = setTimeout(select_winner, finalWcInterval, this.current_ww, cx);
 
@@ -370,10 +370,10 @@ NanoBot.prototype.stop_ww = function(cx, text) {
 
 NanoBot.prototype.end_ww = function(cx, text) {
   if (!this.current_ww.active && !this.current_ww.trailing)
-    return cx.channel.send_reply(cx.sender, 'No WordWar active')
+    return cx.channel.send_reply(cx.sender, 'Nenhuma WordWar ativa.')
 
   if (this.current_ww.active)
-    return cx.channel.send_reply(cx.sender, 'The wordwar is still going on. !stop it before finalizing it.')
+    return cx.channel.send_reply(cx.sender, 'A WordWar ainda está em andamento. Pare ela com !stop antes de encerrar as contagens.')
 
   clearTimeout(this.current_ww.trailing_timer)
 
@@ -411,7 +411,7 @@ NanoBot.prototype.status_ww = function(cx, text) {
 
 NanoBot.prototype.update_wc = function(cx, text) {
   if (!this.current_ww.active && !this.current_ww.trailing)
-    return cx.channel.send_reply(cx.sender, 'No WordWar active')
+    return cx.channel.send_reply(cx.sender, 'Nenhuma WordWar ativa.')
 
   var args = text.split(/\s+/)
   var wc = parseInt(args[0], 10)
