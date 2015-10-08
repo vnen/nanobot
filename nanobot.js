@@ -197,6 +197,9 @@ var WordWar = boo.Base.derive({
     {
       return 'Você não está participando desta WordWar. Envie !join para participar.'
     }
+    if (!this.wordcounts[sender.name]) {
+      this.wordcounts[sender.name] = { start: 0, current: 0 }
+    }
     if(this.open)
     {
       this.wordcounts[sender.name].start = wc
