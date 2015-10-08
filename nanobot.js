@@ -225,6 +225,20 @@ var WordWar = boo.Base.derive({
               ' palavras e você escreveu ' + (wc - this.wordcounts[sender.name].start) + ' palavras.'
     }
   }
+
+, get_wc:
+  function _get_wc(sender) {
+    if(!this.is_participating(sender)) {
+      return 'Você não está participando desta WordWar. Envie !join para participar.'
+    }
+    var initial = this.wordcounts[sender.name].start
+    var current = this.wordcounts[sender.name].current
+    return spice('Inicial: {:initial}. Atual: {:current}. Total: {:total}.'
+        , { initial: initial
+          , current: current
+          , total : current - initial
+        })
+  }
 })
 
 
@@ -272,7 +286,7 @@ NanoBot.prototype.init = function() {
   })
   this.register_command("wc", this.update_wc, {
     allow_intentions: false,
-    help: 'Atualiza sua contagem total de palavras até agora. Se a WordWar não tiver iniciado, essa será sua contagem inicial, então este bot poderá fazer a conta para você. Comando: !wc [contagem] — ex: !wc 42'
+    help: 'Exibe ou atualiza sua contagem total de palavras até agora. Se a WordWar não tiver iniciado, essa será sua contagem inicial, então este bot poderá fazer a conta para você. Comando: !wc [inicial] [contagem] — ex: !wc 42 ou !wc inicial 13'
   })
 
   this.register_command("end", this.end_ww, {
@@ -424,6 +438,9 @@ NanoBot.prototype.update_wc = function(cx, text) {
   if (!ensure_not_active(this, cx))  return
 
   var args = text.split(/\s+/)
+  if (!args[0]) {
+    return cx.channel.send_reply(cx.sender, this.current_ww.get_wc(cx.sender))
+  }
   var wc = parseInt(args[0], 10)
   var start = false
   if (args[0] && args[0].toLowerCase() == 'inicial') {
