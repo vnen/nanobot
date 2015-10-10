@@ -10,7 +10,7 @@ var Twitter = require('twitter')
 
 var profile = require('./nanoprofile')
 var shared  = require('./shared')
-
+var nanoapi = require('./nanoapi')
 
 function ensure_not_active(bot, cx) {
   if (!bot.current_ww.active && !bot.current_ww.trailing)
@@ -308,6 +308,11 @@ NanoBot.prototype.init = function() {
     help: 'Pergunta ao Nanobot se ele sabe algo sobre alguma coisa. Comando: !find [coisa]'
   })
 
+  this.register_command("region", this.region_info, {
+    allow_intentions: true,
+    help: "Mostra informações sobre o Brasil no NaNoWriMo."
+  })
+
   this.register_command("help", this.help)
   this.register_command("commands", this.commands)
 
@@ -456,6 +461,16 @@ NanoBot.prototype.update_wc = function(cx, text) {
 
   if(this.current_ww.finals.length == this.current_ww.participants.length)
     return this.end_ww(cx)
+}
+
+NanoBot.prototype.region_info = function(cx, text) {
+  nanoapi.get_region_info(function(info) {
+    cx.channel.send_reply(cx.sender, spice('A região do Brasil tem {:words} palavras escritas por {:people} pessoas.'
+        , { words: info.region_wordcount
+          , people: info.numparticipants
+        })
+    );
+  })
 }
 
 NanoBot.prototype.help = function(cx, text) {
