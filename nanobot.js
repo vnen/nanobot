@@ -142,6 +142,7 @@ var WordWar = boo.Base.derive({
   function _part(name) {
     this.participants = this.participants.filter(function(a){ return a !== name.name })
     delete this.wordcounts[name.name]
+    delete this.finals[name.name]
   }
 
 , is_participating:
@@ -209,6 +210,9 @@ var WordWar = boo.Base.derive({
     else if (starting)
     {
       this.wordcounts[sender.name].start = wc;
+      if (this.wordcounts[sender.name].current < wc) {
+        this.wordcounts[sender.name].current = wc;
+      }
       var count = this.wordcounts[sender.name].current - this.wordcounts[sender.name].start
       return 'Sua contagem inicial agora é de ' + wc + ' palavras. Você escreveu então ' + count + ' palavras.'
     }
@@ -416,6 +420,9 @@ NanoBot.prototype.part_ww = function(cx, text) {
   if (this.current_ww.is_participating(cx.sender)) {
     this.current_ww.part(cx.sender)
     cx.channel.send(cx.sender + " deixou de participar da WordWar")
+    if (this.current_ww.finals.length == this.current_ww.participants.length) {
+      return this.end_ww(cx);
+    }
   }
 }
 
