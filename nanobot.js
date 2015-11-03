@@ -408,7 +408,7 @@ NanoBot.prototype.join_ww = function(cx, text) {
     return cx.channel.send_reply(cx.sender, "Você já está participando.")
 
   this.current_ww.join(cx.sender)
-  cx.channel.send(cx.sender + " agora está participando da WordWar. Envie !wc para definir sua contagem de palavras.")
+  cx.channel.send(cx.sender + ' agora está participando da WordWar. Envie "!wc inicial" para definir sua contagem de palavras.')
 }
 
 NanoBot.prototype.part_ww = function(cx, text) {
