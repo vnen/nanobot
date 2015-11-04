@@ -176,7 +176,7 @@ var WordWar = boo.Base.derive({
 
 , notify_end:
   function _notify_end() {
-    return spice('WordWar acabou, {:participants}.'
+    return spice('WordWar acabou, {:participants}. Enviem sua contagem final com "!wc".'
                 , { participants: this.participants.join(', ') })
   }
 
@@ -401,7 +401,7 @@ NanoBot.prototype.stop_ww = function(cx, text) {
   if (!ensure_not_active(this, cx))  return
 
   this.current_ww.stop()
-  cx.channel.send_reply(cx.sender, "WordWar terminou. As contagens finais podem ser enviadas nos próximos " + (finalWcInterval / 60000) + ' minutos')
+  cx.channel.send_reply(cx.sender, this.current_ww.notify_end())
 
   this.current_ww.trailing_timer = setTimeout(select_winner, finalWcInterval, this.current_ww, cx);
 
