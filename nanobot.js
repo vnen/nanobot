@@ -142,6 +142,7 @@ var WordWar = boo.Base.derive({
   function _part(name) {
     this.participants = this.participants.filter(function(a){ return a !== name.name })
     delete this.wordcounts[name.name]
+    delete this.finals[name.name]
   }
 
 , is_participating:
@@ -175,7 +176,7 @@ var WordWar = boo.Base.derive({
 
 , notify_end:
   function _notify_end() {
-    return spice('WordWar acabou, {:participants}.'
+    return spice('WordWar acabou, {:participants}. Enviem sua contagem final com "!wc".'
                 , { participants: this.participants.join(', ') })
   }
 
@@ -209,6 +210,9 @@ var WordWar = boo.Base.derive({
     else if (starting)
     {
       this.wordcounts[sender.name].start = wc;
+      if (this.wordcounts[sender.name].current < wc) {
+        this.wordcounts[sender.name].current = wc;
+      }
       var count = this.wordcounts[sender.name].current - this.wordcounts[sender.name].start
       return 'Sua contagem inicial agora é de ' + wc + ' palavras. Você escreveu então ' + count + ' palavras.'
     }
@@ -218,7 +222,9 @@ var WordWar = boo.Base.derive({
 
       if(this.trailing)
       {
-        this.finals.push(sender.name)
+        if (this.finals.indexOf(sender.name) === -1) {
+          this.finals.push(sender.name)
+        }
       }
 
       return 'Sua contagem inicial é de ' + this.wordcounts[sender.name].start +
@@ -238,6 +244,12 @@ var WordWar = boo.Base.derive({
           , current: current
           , total : current - initial
         })
+  }
+, blame:
+  function _blame() {
+    return this.participants.filter(function(name) {
+      return this.finals.indexOf(name) === -1;
+    }, this).join(', ');
   }
 })
 
@@ -292,6 +304,11 @@ NanoBot.prototype.init = function() {
   this.register_command("end", this.end_ww, {
     allow_intentions: false,
     help: 'Encerra o envio das contagens imediatamente. Útil para o caso de alguém ter saído do chat no meio da WordWar. Comando: !end'
+  })
+
+  this.register_command("blame", this.blame_wc, {
+    allow_intentions: true,
+    help: 'Mostra quem ainda não enviou a contagem de palavras final. Comando: !blame'
   })
 
   this.register_command("learn", shared.learn, {
@@ -389,7 +406,7 @@ NanoBot.prototype.stop_ww = function(cx, text) {
   if (!ensure_not_active(this, cx))  return
 
   this.current_ww.stop()
-  cx.channel.send_reply(cx.sender, "WordWar terminou. As contagens finais podem ser enviadas nos próximos " + (finalWcInterval / 60000) + ' minutos')
+  cx.channel.send_reply(cx.sender, this.current_ww.notify_end())
 
   this.current_ww.trailing_timer = setTimeout(select_winner, finalWcInterval, this.current_ww, cx);
 
@@ -413,7 +430,7 @@ NanoBot.prototype.join_ww = function(cx, text) {
     return cx.channel.send_reply(cx.sender, "Você já está participando.")
 
   this.current_ww.join(cx.sender)
-  cx.channel.send(cx.sender + " agora está participando da WordWar. Envie !wc para definir sua contagem de palavras.")
+  cx.channel.send(cx.sender + ' agora está participando da WordWar. Envie "!wc inicial" para definir sua contagem de palavras.')
 }
 
 NanoBot.prototype.part_ww = function(cx, text) {
@@ -421,6 +438,9 @@ NanoBot.prototype.part_ww = function(cx, text) {
   if (this.current_ww.is_participating(cx.sender)) {
     this.current_ww.part(cx.sender)
     cx.channel.send(cx.sender + " deixou de participar da WordWar")
+    if (this.current_ww.finals.length == this.current_ww.participants.length) {
+      return this.end_ww(cx);
+    }
   }
 }
 
@@ -471,6 +491,17 @@ NanoBot.prototype.region_info = function(cx, text) {
         })
     );
   })
+}
+
+NanoBot.prototype.blame_wc = function(cx, text) {
+  if (!ensure_not_active(this, cx)) return;
+
+  if (!this.current_ww.trailing) {
+    return cx.channel.send_reply(cx.sender, 'Calma, a WordWar ainda não acabou.');
+  }
+
+  cx.channel.send_reply(cx.intent, 'Os seguintes nanowriters ainda não enviaram a contagem: ' + this.current_ww.blame());
+
 }
 
 NanoBot.prototype.help = function(cx, text) {
