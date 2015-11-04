@@ -222,7 +222,9 @@ var WordWar = boo.Base.derive({
 
       if(this.trailing)
       {
-        this.finals.push(sender.name)
+        if (this.finals.indexOf(sender.name) === -1) {
+          this.finals.push(sender.name)
+        }
       }
 
       return 'Sua contagem inicial é de ' + this.wordcounts[sender.name].start +
